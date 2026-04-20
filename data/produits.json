@@ -1,0 +1,23 @@
+{
+    "3017620422003": {
+        "code_barre": "3017620422003",
+        "nom": "Vain amour 1L",
+        "prix_unitaire_ht": 1200,
+        "quantite_stock": 50,
+        "created_at": "2024-01-01"
+    },
+    "3017620422010": {
+        "code_barre": "3017620422010",
+        "nom": "Huile de palme 1L",
+        "prix_unitaire_ht": 1200,
+        "quantite_stock": 30,
+        "created_at": "2024-01-01"
+    },
+    "3017620422027": {
+        "code_barre": "3017620422027",
+        "nom": "Savon de Marseille",
+        "prix_unitaire_ht": 450,
+        "quantite_stock": 100,
+        "created_at": "2024-01-01"
+    }
+}
