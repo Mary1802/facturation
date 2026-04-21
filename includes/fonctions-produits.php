@@ -1,5 +1,5 @@
 <?php
-require_once '../config/config.php';
+require_once __DIR__ . '/../config/config.php';
 
 /**
  * Récupère tous les produits
@@ -21,20 +21,18 @@ function getProduitByCode($codeBarre) {
  */
 function saveProduit($codeBarre, $nom, $prixUnitaireHT, $quantiteStock) {
     $produits = getProduits();
+    $createdAt = $produits[$codeBarre]['created_at'] ?? date('Y-m-d H:i:s');
 
     $produits[$codeBarre] = [
         'code_barre' => $codeBarre,
         'nom' => $nom,
         'prix_unitaire_ht' => (float) $prixUnitaireHT,
         'quantite_stock' => (int) $quantiteStock,
+        'created_at' => $createdAt,
         'updated_at' => date('Y-m-d H:i:s')
     ];
 
-    if (!isset($produits[$codeBarre]['created_at'])) {
-        $produits[$codeBarre]['created_at'] = date('Y-m-d H:i:s');
-    }
-
-    return file_put_contents(PRODUITS_FILE, json_encode($produits, JSON_PRETTY_PRINT)) !== false;
+    return file_put_contents(PRODUITS_FILE, json_encode($produits, JSON_PRETTY_PRINT), LOCK_EX) !== false;
 }
 
 /**
@@ -50,7 +48,7 @@ function updateStock($codeBarre, $nouvelleQuantite) {
     $produits[$codeBarre]['quantite_stock'] = (int) $nouvelleQuantite;
     $produits[$codeBarre]['updated_at'] = date('Y-m-d H:i:s');
 
-    return file_put_contents(PRODUITS_FILE, json_encode($produits, JSON_PRETTY_PRINT)) !== false;
+    return file_put_contents(PRODUITS_FILE, json_encode($produits, JSON_PRETTY_PRINT), LOCK_EX) !== false;
 }
 
 /**
@@ -58,14 +56,9 @@ function updateStock($codeBarre, $nouvelleQuantite) {
  */
 function deleteProduit($codeBarre) {
     $produits = getProduits();
-
-    if (!isset($produits[$codeBarre])) {
-        return false;
-    }
-
+    if (!isset($produits[$codeBarre])) return false;
     unset($produits[$codeBarre]);
-
-    return file_put_contents(PRODUITS_FILE, json_encode($produits, JSON_PRETTY_PRINT)) !== false;
+    return file_put_contents(PRODUITS_FILE, json_encode($produits, JSON_PRETTY_PRINT), LOCK_EX) !== false;
 }
 
 /**

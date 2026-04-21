@@ -1,6 +1,6 @@
 <?php
-require_once '../config/config.php';
-require_once 'fonctions-produits.php';
+require_once __DIR__ . '/../config/config.php';
+require_once __DIR__ . '/fonctions-produits.php';
 
 /**
  * Génère un numéro de facture unique
@@ -95,7 +95,7 @@ function createFacture($items, $caissier) {
     $factures = getFactures();
     $factures[] = $facture;
 
-    return file_put_contents(FACTURES_FILE, json_encode($factures, JSON_PRETTY_PRINT)) !== false ? $facture : false;
+    return file_put_contents(FACTURES_FILE, json_encode($factures, JSON_PRETTY_PRINT), LOCK_EX) !== false ? $facture : false;
 }
 
 /**

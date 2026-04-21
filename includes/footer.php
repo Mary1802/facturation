@@ -1,7 +1,7 @@
         </main>
     </div>
 
-    <script src="../assets/js/scanner.js"></script>
+    <script src="/facturation/assets/js/scanner.js"></script>
     <script>
         lucide.createIcons();
 

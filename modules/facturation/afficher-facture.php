@@ -81,7 +81,7 @@ if (!$facture) {
                 </div>
                 <div class="flex justify-end gap-4">
                     <span>TVA (<?php echo (TVA_RATE * 100); ?>%):</span>
-                    <span class="w-32"><?php echo number_format($facture['total_tva'], 0, ',', ' '); ?> <?php echo CURRENCY; ?></span>
+                    <span class="w-32"><?php echo number_format($facture['tva'], 0, ',', ' '); ?> <?php echo CURRENCY; ?></span>
                 </div>
                 <div class="flex justify-end gap-4 pt-2 border-t-2 border-gray-300">
                     <span class="text-xl">Net à payer:</span>
@@ -95,8 +95,12 @@ if (!$facture) {
                 <i data-lucide="printer" class="w-5 h-5"></i>
                 Imprimer
             </button>
-            <a href="nouvelle-facture.php" class="flex-1 bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors text-center">
+            <a href="nouvelle-facture.php" class="flex-1 flex items-center justify-center gap-2 bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors">
+                <i data-lucide="plus" class="w-5 h-5"></i>
                 Nouvelle facture
+            </a>
+            <a href="/facturation/rapports/rapport-journalier.php" class="flex items-center justify-center gap-2 px-4 bg-gray-100 text-gray-700 py-3 rounded-lg hover:bg-gray-200 transition-colors">
+                <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
             </a>
         </div>
     </div>

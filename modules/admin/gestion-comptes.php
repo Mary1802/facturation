@@ -3,7 +3,7 @@ require_once '../../includes/header.php';
 require_once '../../includes/fonctions-auth.php';
 
 if (!hasRole('super_admin')) {
-    header('Location: ../../index.php');
+    header('Location: /facturation/index.php');
     exit;
 }
 

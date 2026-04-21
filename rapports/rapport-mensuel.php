@@ -3,7 +3,7 @@ require_once '../includes/header.php';
 require_once '../includes/fonctions-factures.php';
 
 if (!hasRole('manager')) {
-    header('Location: ../index.php');
+    header('Location: /facturation/index.php');
     exit;
 }
 

@@ -3,7 +3,7 @@ require_once '../includes/header.php';
 require_once '../includes/fonctions-factures.php';
 
 if (!hasRole('manager')) {
-    header('Location: ../index.php');
+    header('Location: /facturation/index.php');
     exit;
 }
 
@@ -85,10 +85,10 @@ $stats = getSalesStats($date, $date);
                             <td class="py-3 px-4"><?php echo htmlspecialchars($facture['caissier']); ?></td>
                             <td class="py-3 px-4 text-center"><?php echo $facture['heure']; ?></td>
                             <td class="py-3 px-4 text-right"><?php echo number_format($facture['total_ht'], 0, ',', ' '); ?> <?php echo CURRENCY; ?></td>
-                            <td class="py-3 px-4 text-right"><?php echo number_format($facture['total_tva'], 0, ',', ' '); ?> <?php echo CURRENCY; ?></td>
+                            <td class="py-3 px-4 text-right"><?php echo number_format($facture['tva'], 0, ',', ' '); ?> <?php echo CURRENCY; ?></td>
                             <td class="py-3 px-4 text-right font-semibold"><?php echo number_format($facture['total_ttc'], 0, ',', ' '); ?> <?php echo CURRENCY; ?></td>
                             <td class="py-3 px-4 text-center">
-                                <a href="../modules/facturation/afficher-facture.php?numero=<?php echo urlencode($facture['numero']); ?>"
+                                <a href="/facturation/modules/facturation/afficher-facture.php?numero=<?php echo urlencode($facture['numero']); ?>"
                                    class="text-blue-600 hover:text-blue-800">
                                     <i data-lucide="eye" class="w-4 h-4"></i>
                                 </a>

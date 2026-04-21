@@ -11,36 +11,29 @@ if (isLoggedIn()) {
 $error = '';
 $timeout = isset($_GET['timeout']) && $_GET['timeout'] == '1';
 
+// Génération du token CSRF
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = trim($_POST['username'] ?? '');
     $password = trim($_POST['password'] ?? '');
 
-    // Validation basique
     if (empty($username) || empty($password)) {
         $error = 'Veuillez remplir tous les champs';
+    } elseif (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'] ?? '')) {
+        $error = 'Requête invalide, veuillez réessayer';
     } else {
-        // Charger les utilisateurs
-        $users = json_decode(file_get_contents(UTILISATEURS_FILE), true);
-
-        // Vérifier les comptes de démonstration
-        $demoUsers = DEMO_USERS;
-
-        if (isset($demoUsers[$username]) && $demoUsers[$username]['password'] === $password) {
-            // Connexion réussie
-            $_SESSION['user_id'] = $username;
-            $_SESSION['role'] = $demoUsers[$username]['role'];
-            $_SESSION['user_name'] = $demoUsers[$username]['name'];
+        require_once '../includes/fonctions-auth.php';
+        $user = authenticateUser($username, $password);
+        if ($user) {
+            session_regenerate_id(true);
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['role'] = $user['role'];
+            $_SESSION['user_name'] = $user['name'];
             $_SESSION['last_activity'] = time();
-
-            header('Location: ../index.php');
-            exit;
-        } elseif (isset($users[$username]) && $users[$username]['password'] === $password) {
-            // Connexion avec utilisateur du fichier JSON
-            $_SESSION['user_id'] = $username;
-            $_SESSION['role'] = $users[$username]['role'];
-            $_SESSION['user_name'] = $users[$username]['name'] ?? $username;
-            $_SESSION['last_activity'] = time();
-
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
             header('Location: ../index.php');
             exit;
         } else {
@@ -76,6 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php endif; ?>
 
         <form method="POST" class="space-y-6">
+            <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
             <div>
                 <label class="block text-sm mb-2 text-gray-700">Identifiant</label>
                 <div class="relative">

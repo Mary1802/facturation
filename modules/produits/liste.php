@@ -3,7 +3,7 @@ require_once '../../includes/header.php';
 require_once '../../includes/fonctions-produits.php';
 
 if (!hasRole('manager')) {
-    header('Location: ../../index.php');
+    header('Location: /facturation/index.php');
     exit;
 }
 
@@ -50,10 +50,10 @@ if (isset($_GET['delete'])) {
         <div class="flex items-center justify-between mb-6">
             <div class="flex items-center gap-3">
                 <i data-lucide="file-text" class="w-6 h-6 text-blue-600"></i>
-                <h2 class="text-2xl">Liste des Produits</h2>
+                <h2 class="text-xl font-semibold">Liste des Produits</h2>
             </div>
-            <a href="enregistrer.php" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-                <i data-lucide="plus" class="w-4 h-4 inline mr-2"></i>
+            <a href="enregistrer.php" class="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm">
+                <i data-lucide="plus" class="w-4 h-4"></i>
                 Nouveau produit
             </a>
         </div>
@@ -115,6 +115,9 @@ if (isset($_GET['delete'])) {
                         <td class="py-3 px-4"><?php echo htmlspecialchars($produit['nom']); ?></td>
                         <td class="py-3 px-4 text-right"><?php echo number_format($produit['prix_unitaire_ht'], 0, ',', ' '); ?> <?php echo CURRENCY; ?></td>
                         <td class="py-3 px-4 text-center">
+                            <?php
+                            $stockClass = $produit['quantite_stock'] == 0 ? 'text-red-600 font-semibold' : ($produit['quantite_stock'] <= 5 ? 'text-orange-500 font-semibold' : '');
+                            ?>
                             <form method="POST" class="inline-flex items-center gap-2">
                                 <input type="hidden" name="code_barre" value="<?php echo htmlspecialchars($produit['code_barre']); ?>">
                                 <input
@@ -122,19 +125,29 @@ if (isset($_GET['delete'])) {
                                     name="nouvelle_quantite"
                                     value="<?php echo $produit['quantite_stock']; ?>"
                                     min="0"
-                                    class="w-20 px-2 py-1 border border-gray-300 rounded text-center"
+                                    class="w-20 px-2 py-1 border border-gray-300 rounded text-center <?php echo $stockClass; ?>"
                                 />
-                                <button type="submit" name="update_stock" class="text-blue-600 hover:text-blue-800">
+                                <button type="submit" name="update_stock" class="text-blue-600 hover:text-blue-800" title="Sauvegarder">
                                     <i data-lucide="save" class="w-4 h-4"></i>
                                 </button>
                             </form>
+                            <?php if ($produit['quantite_stock'] == 0): ?>
+                            <span class="block text-xs text-red-500 mt-1">Rupture</span>
+                            <?php elseif ($produit['quantite_stock'] <= 5): ?>
+                            <span class="block text-xs text-orange-500 mt-1">Stock faible</span>
+                            <?php endif; ?>
                         </td>
                         <td class="py-3 px-4 text-center">
-                            <a href="?delete=<?php echo urlencode($produit['code_barre']); ?><?php echo $search ? '&search=' . urlencode($search) : ''; ?>"
-                               class="text-red-600 hover:text-red-800"
-                               onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce produit ?')">
-                                <i data-lucide="trash-2" class="w-4 h-4"></i>
-                            </a>
+                            <div class="flex items-center justify-center gap-2">
+                                <a href="enregistrer.php?edit=<?php echo urlencode($produit['code_barre']); ?>" class="text-blue-600 hover:text-blue-800" title="Modifier">
+                                    <i data-lucide="pencil" class="w-4 h-4"></i>
+                                </a>
+                                <a href="?delete=<?php echo urlencode($produit['code_barre']); ?><?php echo $search ? '&search=' . urlencode($search) : ''; ?>"
+                                   class="text-red-600 hover:text-red-800" title="Supprimer"
+                                   onclick="return confirm('Supprimer ce produit ?')">
+                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                </a>
+                            </div>
                         </td>
                     </tr>
                     <?php endforeach; ?>
